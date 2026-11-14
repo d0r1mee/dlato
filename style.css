@@ -1,0 +1,74 @@
+/* Интерфейс намеренно монохромный: цвет в игре существует только в 3D-сцене,
+   которая проходит через фильтр восприятия. */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; color: #eee;
+  font-family: "Segoe UI", system-ui, sans-serif; user-select: none; }
+#game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+.hidden { display: none !important; }
+
+#hud { position: fixed; inset: 0; pointer-events: none; }
+#objective { position: absolute; top: 18px; left: 22px; font-size: 15px; padding: 8px 12px;
+  background: rgba(0,0,0,.45); border-left: 3px solid #ddd; max-width: 420px; }
+#objective:empty { display: none; }
+#vision-label { position: absolute; top: 18px; right: 22px; font-size: 13px; padding: 6px 10px;
+  background: rgba(0,0,0,.45); letter-spacing: .03em; text-align: right; white-space: pre-line; }
+#vision-label:empty { display: none; }
+#crosshair { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px;
+  border-radius: 50%; background: rgba(255,255,255,.8); box-shadow: 0 0 2px #000; }
+#crosshair.active { width: 12px; height: 12px; margin: -6px 0 0 -6px; background: transparent;
+  border: 2px solid #fff; }
+#prompt { position: absolute; left: 50%; top: calc(50% + 28px); transform: translateX(-50%);
+  font-size: 15px; padding: 4px 10px; background: rgba(0,0,0,.5); border-radius: 3px; }
+#prompt:empty { display: none; }
+#toast { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); font-size: 18px;
+  padding: 8px 16px; background: rgba(0,0,0,.6); opacity: 0; transition: opacity .4s; text-align: center; }
+#toast.show { opacity: 1; }
+
+#dialogue { position: fixed; left: 50%; bottom: 36px; transform: translateX(-50%); width: min(860px, 92vw);
+  background: rgba(10,10,10,.86); border: 1px solid #555; padding: 16px 22px 12px; }
+#dlg-name { font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: .08em;
+  color: #bbb; margin-bottom: 6px; }
+#dlg-name:empty { display: none; }
+#dlg-text { font-size: 19px; line-height: 1.45; min-height: 2.9em; white-space: pre-line; }
+#dlg-text.thought { font-style: italic; color: #ccc; }
+#dlg-choices { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+#dlg-choices:empty { display: none; }
+#dlg-hint { font-size: 12px; color: #888; text-align: right; margin-top: 6px; }
+
+button { font: inherit; font-size: 16px; color: #eee; background: #222; border: 1px solid #777;
+  padding: 8px 14px; cursor: pointer; text-align: left; }
+button:hover, button:focus-visible { background: #3a3a3a; border-color: #fff; outline: none; }
+button .key { display: inline-block; min-width: 1.6em; color: #999; }
+
+#panel { position: fixed; right: 4vw; top: 50%; transform: translateY(-50%); width: 300px;
+  background: rgba(10,10,10,.86); border: 1px solid #555; padding: 16px; }
+#panel h3 { margin: 0 0 8px; font-size: 16px; }
+#panel p { margin: 6px 0; font-size: 14px; color: #ccc; line-height: 1.4; }
+#panel .row { display: flex; align-items: center; justify-content: space-between; margin: 8px 0; }
+#panel .row button { text-align: center; min-width: 40px; }
+#panel .bars { font-family: Consolas, monospace; font-size: 18px; letter-spacing: 2px; }
+#panel .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+#panel .grid button { text-align: center; }
+
+#fade { position: fixed; inset: 0; background: #000; opacity: 1; pointer-events: none;
+  transition: opacity 1.2s; }
+
+.screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.82); }
+#screen-title { background: #000; }
+.screen-inner { max-width: 640px; text-align: center; padding: 24px; }
+.screen-inner h1 { font-size: 54px; margin: 0 0 6px; font-weight: 300; letter-spacing: .06em; }
+.screen-inner h2 { font-size: 22px; font-weight: 400; color: #bbb; margin: 0 0 22px; }
+.screen-inner .note { color: #aaa; line-height: 1.5; }
+.screen-inner button { text-align: center; margin: 18px auto 0; display: block; padding: 10px 28px; }
+.screen-inner .controls { font-size: 13px; color: #777; margin-top: 24px; }
+.setting { display: block; margin-top: 18px; font-size: 14px; color: #aaa; }
+.setting input { display: block; margin: 8px auto 0; width: 220px; }
+#end-text { text-align: left; line-height: 1.55; color: #ccc; font-size: 15px; }
+#end-text ul { padding-left: 20px; }
+
+/* слои: затемнение под диалогами, экраны поверх всего */
+#hud { z-index: 6; }
+#fade { z-index: 5; }
+#dialogue, #panel { z-index: 10; }
+.screen { z-index: 20; }
